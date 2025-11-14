@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción a Python para Ciencias de la Vida</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        @font-face {
+            font-family: 'FKGroteskNeue';
+            src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2');
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(167, 169, 169, 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-border: rgba(119, 124, 124, 0.3);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide-container {
+            width: 960px;
+            height: 540px;
+            aspect-ratio: 16/9;
+            max-width: 95vw;
+            max-height: 95vh;
+            background-color: var(--color-surface);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 48px 64px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--color-primary);
+            line-height: 1.2;
+        }
+
+        .slide h2 {
+            font-size: 36px;
+            margin-bottom: 24px;
+            color: var(--color-primary);
+            line-height: 1.3;
+        }
+
+        .slide h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--color-text);
+        }
+
+        .slide p {
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            color: var(--color-text);
+        }
+
+        .slide ul {
+            list-style-position: inside;
+            margin-left: 0;
+        }
+
+        .slide li {
+            font-size: 20px;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            color: var(--color-text);
+        }
+
+        .slide code {
+            font-family: var(--font-family-mono);
+            background-color: rgba(var(--color-teal-500-rgb), 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 18px;
+        }
+
+        .slide pre {
+            background-color: rgba(var(--color-slate-900-rgb), 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 16px 0;
+            border: 1px solid var(--color-border);
+        }
+
+        .slide pre code {
+            background: none;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1.5;
+            display: block;
+        }
+
+        .title-slide {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .title-slide h1 {
+            font-size: 56px;
+            margin-bottom: 24px;
+        }
+
+        .title-slide .subtitle {
+            font-size: 32px;
+            color: var(--color-text-secondary);
+            margin-top: 16px;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 24px;
+            right: 32px;
+            font-size: 16px;
+            color: var(--color-text-secondary);
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 24px;
+            left: 32px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background-color: var(--color-primary);
+            color: var(--color-surface);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-family-base);
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .content-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content-area::-webkit-scrollbar-thumb {
+            background: var(--color-border);
+            border-radius: 3px;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-top: 16px;
+        }
+
+        .highlight-box {
+            background-color: rgba(var(--color-teal-500-rgb), 0.08);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--color-primary);
+            margin: 16px 0;
+        }
+
+        strong, b {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        @media (max-width: 1024px) {
+            .slide-container {
+                width: 90vw;
+                height: 50.625vw;
+                padding: 32px 40px;
+            }
+
+            .slide h1 { font-size: 36px; }
+            .slide h2 { font-size: 28px; }
+            .slide h3 { font-size: 22px; }
+            .slide p, .slide li { font-size: 16px; }
+            .slide pre code { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-container">
+            <!-- Slide 1: Title -->
+            <div class="slide active title-slide">
+                <div>
+                    <p style="font-size: 20px; color: var(--color-text-secondary); margin-bottom: 32px;">Herramientas de Programación y Análisis de Datos</p>
+                    <h1>Introducción a Python para Ciencias de la Vida</h1>
+                    <p class="subtitle">Fundamentos y Aplicaciones en Bioinformática</p>
+                </div>
+            </div>
+
+            <!-- Slide 2: ¿Qué es Python? -->
+            <div class="slide">
+                <div class="content-area">
+                    <h2>¿Qué es Python?</h2>
+                    <ul>
+                        <li><strong>Lenguaje interpretado</strong> de alto nivel y propósito general</li>
+                        <li><strong>Sintaxis clara y legible</strong>, fácil de aprender</li>
+                        <li><strong>Multipropósito</strong>: desarrollo web, automatización, análisis de datos, IA</li>
+                        <li><strong>Muy popular en ciencias</strong>: bioinformática, análisis de datos, investigación</li>
+                        <li><strong>Gran comunidad</strong> y abundantes bibliotecas especializadas</li>
+                    </ul>
+                    <div class="highlight-box" style="margin-top: 24px;">
+                        <p><strong>Python</strong> es uno de los lenguajes más utilizados en ciencias de la vida por su facilidad de uso y potencia.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: Operaciones Básicas -->
+            <div class="slide">
+                <div class="content-area">
+                    <h2>Operaciones Básicas en Python</h2>
+                    <h3>Variables y Tipos de Datos</h3>
+                    <pre><code># Números
+edicion = 2025
+temperatura = 37.5
+
+# Cadenas de texto
+nombre = "Python"
+gen = "ATGCATGC"
+
+# Operaciones aritméticas
+suma = 10 + 5        # 15
+multiplicacion = 3 * 4  # 12
+potencia = 2 ** 3    # 8
+
+# Operaciones con cadenas
+repetir = "ATG" * 3  # "ATGATGATG"
+longitud = len(gen)  # 8</code></pre>
+                </div>
+            </div>
+
+            <!-- Slide 4: Estructuras de Datos -->
+            <div class="slide">
+                <div class="content-area">
+                    <h2>Estructuras de Datos</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Listas</h3>
+                            <pre><code># Lista de bases
+bases = ['A', 'T', 'G', 'C']
+
+# Acceder elementos
+print(bases[0])  # 'A'
+
+# Añadir elementos
+bases.append('U')
+
+# Longitud
+len(bases)  # 5</code></pre>
+                        </div>
+                        <div>
+                            <h3>Diccionarios</h3>
+                            <pre><code># Pares clave-valor
+codones = {
+    'AUG': 'Metionina',
+    'UGA': 'Stop',
+    'GCC': 'Alanina'
+}
+
+# Acceder valores
+print(codones['AUG'])
+# 'Metionina'</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5: Python para Ciencias de la Vida -->
+            <div class="slide">
+                <div class="content-area">
+                    <h2>Python para Ciencias de la Vida</h2>
+                    <h3>Aplicaciones Principales</h3>
+                    <ul>
+                        <li><strong>Bioinformática</strong>: análisis de secuencias, alineamientos, búsqueda de patrones</li>
+                        <li><strong>Análisis de datos ómicos</strong>: genómica, transcriptómica, proteómica</li>
+                        <li><strong>Modelado molecular</strong>: estructura de proteínas, docking</li>
+                        <li><strong>Análisis filogenético</strong>: árboles evolutivos, distancias genéticas</li>
+                        <li><strong>Visualización</strong>: gráficos, mapas de calor, redes biológicas</li>
+                        <li><strong>Machine Learning</strong>: predicción de estructuras, clasificación de genes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 6: Trabajando con ADN -->
+            <div class="slide">
+                <div class="content-area">
+                    <h2>Trabajando con Secuencias de ADN</h2>
+                    <p>En Python, las secuencias de ADN se representan como <strong>cadenas de texto</strong> (strings).</p>
+                    <div class="highlight-box">
+                        <p><strong>Ejemplo real:</strong> Fragmento del gen HBB (beta-globina humana)</p>
+                        <code style="font-size: 16px;">ATGGTGCACCTGACTCCTGAGGAGA</code>
+                    </div>
+                    <h3>Contar Nucleótidos</h3>
+                    <pre><code># Secuencia real de ADN
+dna_seq = "ATGGTGCACCTGACTCCTGAGGAGA"
+
+# Contar cada base
+count_A = dna_seq.count('A')
+count_T = dna_seq.count('T')
+count_G = dna_seq.count('G')
+count_C = dna_seq.count('C')
+
+print(f"A: {count_A}, T: {count_T}, G: {count_G}, C: {count_C}")
+# Resultado: A: 9, T: 4, G: 8, C: 4</code></pre>
+                </div>
+            </div>
+
+            <!-- Slide 7: Transcripción ADN a ARN -->
+            <div class="slide">
+                <div class="content-area">
+                    <h2>Transcripción: ADN → ARN</h2>
+                    <p>La <strong>transcripción</strong> convierte ADN en ARN reemplazando <strong>Timina (T)</strong> por <strong>Uracilo (U)</strong>.</p>
+                    <pre><code># Transcribir ADN a ARN (T → U)
+dna_seq = "ATGGTGCACCTGACTCCTGAGGAGA"
+rna_seq = dna_seq.replace('T', 'U')
+
+print("ADN:", dna_seq)
+# ADN: ATGGTGCACCTGACTCCTGAGGAGA
+
+print("ARN:", rna_seq)
+# ARN: AUGGUGCACCUGACUCCUGAGGAGA</code></pre>
+                    <div class="highlight-box" style="margin-top: 24px;">
+                        <p><strong>Nota:</strong> Este es un proceso biológico fundamental que Python puede simular con una simple operación de reemplazo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8: Visualización -->
+            <div class="slide">
+                <div class="content-area">
+                    <h2>Visualización con Matplotlib</h2>
+                    <p>Podemos visualizar la <strong>frecuencia de nucleótidos</strong> con gráficos de barras:</p>
+                    <pre><code>import matplotlib.pyplot as plt
+
+dna_seq = "ATGGTGCACCTGACTCCTGAGGAGA"
+counts = {
+    'A': dna_seq.count('A'),
+    'T': dna_seq.count('T'),
+    'G': dna_seq.count('G'),
+    'C': dna_seq.count('C')
+}
+
+bases = list(counts.keys())
+frequencies = list(counts.values())
+
+plt.bar(bases, frequencies, 
+        color=['blue', 'orange', 'green', 'red'])
+plt.title('Frecuencia de nucleótidos')
+plt.xlabel('Nucleótidos')
+plt.ylabel('Cantidad')
+plt.show()</code></pre>
+                    <p style="margin-top: 16px;"><strong>Resultado:</strong> Gráfico de barras mostrando A=9, T=4, G=8, C=4</p>
+                </div>
+            </div>
+
+            <!-- Slide 9: Aplicaciones en Bioinformática -->
+            <div class="slide">
+                <div class="content-area">
+                    <h2>Aplicaciones en Bioinformática</h2>
+                    <h3>Biopython: Biblioteca Especializada</h3>
+                    <pre><code>from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio import pairwise2
+
+# Leer archivos FASTA
+for record in SeqIO.parse("secuencia.fasta", "fasta"):
+    print(record.id)
+    print(record.seq)
+
+# Trabajar con secuencias
+seq = Seq("ATGGTGCACCTGACTCCTGAGGAGA")
+rna = seq.transcribe()  # ADN → ARN
+proteina = seq.translate()  # ARN → Proteína
+
+# Alineamiento de secuencias
+alineamiento = pairwise2.align.globalxx(seq1, seq2)</code></pre>
+                </div>
+            </div>
+
+            <!-- Slide 10: Recursos y Referencias -->
+            <div class="slide">
+                <div class="content-area">
+                    <h2>Recursos y Referencias</h2>
+                    <h3>Documentación y Tutoriales</h3>
+                    <ul>
+                        <li><strong>Python for Biologists</strong> - pythonforbiologists.com<br/><span style="font-size: 16px; color: var(--color-text-secondary);">Tutorial específico para biólogos sin experiencia en programación</span></li>
+                        <li><strong>Biopython</strong> - biopython.org<br/><span style="font-size: 16px; color: var(--color-text-secondary);">Biblioteca principal para bioinformática en Python</span></li>
+                        <li><strong>Python for the Life Sciences</strong><br/><span style="font-size: 16px; color: var(--color-text-secondary);">Libro especializado en aplicaciones biológicas</span></li>
+                        <li><strong>Jupyter Notebook</strong><br/><span style="font-size: 16px; color: var(--color-text-secondary);">Entorno interactivo ideal para práctica y análisis</span></li>
+                    </ul>
+                    <div class="highlight-box" style="margin-top: 24px;">
+                        <p><strong>¡Empieza a practicar!</strong> La mejor forma de aprender programación es escribiendo código.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Anterior</button>
+                <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Siguiente →</button>
+            </div>
+            <div class="slide-number" id="slideNumber">1 / 10</div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideNumber = document.getElementById('slideNumber');
+
+        function showSlide(n) {
+            // Validate slide number
+            if (n >= totalSlides) {
+                currentSlide = totalSlides - 1;
+            } else if (n < 0) {
+                currentSlide = 0;
+            } else {
+                currentSlide = n;
+            }
+
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Show current slide
+            slides[currentSlide].classList.add('active');
+
+            // Update slide number
+            slideNumber.textContent = `${currentSlide + 1} / ${totalSlides}`;
+
+            // Update button states
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                changeSlide(-1);
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                showSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        // Click on slide to advance (except on buttons)
+        document.querySelector('.slide-container').addEventListener('click', (e) => {
+            if (!e.target.classList.contains('nav-btn') && currentSlide < totalSlides - 1) {
+                changeSlide(1);
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
